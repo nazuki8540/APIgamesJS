@@ -14,6 +14,13 @@
     <input type="number" name="year" id="year" placeholder="Ano"><br>
     <input type="number" name="price" id="price" placeholder="Preço"><br>
     <button type="button" onclick="createGame()">Criar</button>
+    <hr>
+    <h4>Editar game</h4>
+    <input type="text" name="idEdit" id="idEdit" placeholder="ID"><br>
+    <input type="text" name="titleEdit" id="titleEdit" placeholder="titulo"><br>
+    <input type="number" name="yearEdit" id="yearEdit" placeholder="Ano"><br>
+    <input type="number" name="priceEdit" id="priceEdit" placeholder="Preço"><br>
+    <button type="button" onclick="updateGame()">Editar</button>
 </head>
 <body>
     
@@ -57,6 +64,40 @@
        });
     }
 
+    function loadForm(ListItem){
+        var id = ListItem.getAttribute("data-id");
+        var title = ListItem.getAttribute("data-title");
+        var year = ListItem.getAttribute("data-year");
+        var price = ListItem.getAttribute("data-price");
+        document.getElementById("idEdit").value = id;
+        document.getElementById("priceEdit").value = price;
+        document.getElementById("yearEdit").value = year;
+        document.getElementById("titleEdit").value = title;
+    }
+
+    function updateGame(){
+        var idInput = document.getElementById("idEdit");
+        var titleInput = document.getElementById("titleEdit");
+        var yearInput = document.getElementById("yearEdit");
+        var priceInput = document.getElementById("priceEdit");
+
+        var game = {
+            title: titleInput.value,
+            year : yearInput.value,
+            price: priceInput.value
+        }
+
+        var id = idInput.value;
+
+        axios.put("http://localhost:4000/game/"+id, game).then(response => {
+            if(response.status == 200){
+                alert("Game atualizado!")
+            }
+        }).catch(err => {
+            console.log(err);
+        });
+    }
+
     axios.get("http://localhost:4000/games").then(response => {
         var games = response.data;
         var list = document.getElementById("games");
@@ -78,6 +119,13 @@
                 deleteGame(item)
             })
 
+            var editBtn = document.createElement("button");
+            editBtn.innerHTML = "Editar";
+            editBtn.addEventListener("click",function(){
+                loadForm(item);
+            });
+
+            item.appendChild(editBtn);
             item.appendChild(deleteBtn);
 
 
