@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loja de games</title>
+    <h2>Login</h2>
+    <input type="text" name="login" id="login" placeholder="usuario@gmail.com"><br>
+    <input type="password" name="password" id="password" placeholder="Digite sua senha"> 
+    <button onclick="login">Entrar</button>
     <hr>
     <h4>Lista de games &emsp; <button type="button" id="refresh">Atualizar</button></h4> 
     <ul id="games"></ul>
@@ -34,6 +38,29 @@
         location.reload();
 
     });
+
+    function login(){
+        var emailField = document.getElementById("email");
+        var passwordField = document.getElementById("password");
+
+        var email = emailField.value;
+        var password = passwordField.value;
+
+        axios.post("http://localhost:4000/auth",{
+            email,
+            password
+        }).then(res => {
+           var token = res.data.token;
+        }).catch(err => {
+            alert("LOGIN ERRADO");
+        })
+    }
+
+    var axiosConfig = {
+        headers: {
+            Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjAsImVtYWlsIjoiZ3VpZ2dAZ21haWwuY29tIiwiaWF0IjoxNjYyMjYwOTcwLCJleHAiOjE2NjI0MzM3NzB9.qlJ021380dfingVPiSZX191SizKoVOtf8DQsUHxV_6Y"
+        }
+    }
 
     function createGame(){
         var titleInput = document.getElementById("title");
@@ -98,7 +125,7 @@
         });
     }
 
-    axios.get("http://localhost:4000/games").then(response => {
+    axios.get("http://localhost:4000/games",axiosConfig).then(response => {
         var games = response.data;
         var list = document.getElementById("games");
 
